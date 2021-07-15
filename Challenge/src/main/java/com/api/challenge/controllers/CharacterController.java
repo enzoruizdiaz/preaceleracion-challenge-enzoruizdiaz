@@ -33,74 +33,8 @@ public class CharacterController {
 	private ModelMapper mapper = new ModelMapper();
 	
 	@GetMapping
-	public ResponseEntity<?> ListarChar() {
-		
-		
-		List<Character> listChar = charService.findAll();
-		if (listChar.isEmpty()) {
-			return new ResponseEntity<>(new String("No se encontraron personajes."), HttpStatus.BAD_REQUEST);
-		} else {
-			List<CharacterDtoList> listaDtoChar = new ArrayList<>();
-			for (Character c : listChar) {
-				CharacterDtoList dtoCharAux = new CharacterDtoList();
-				dtoCharAux.setName(c.getName());
-				dtoCharAux.setPicture(c.getPicture());
-				listaDtoChar.add(dtoCharAux);
-			}
-			return new ResponseEntity<>(listaDtoChar, HttpStatus.OK);
-		}
-	}
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<?> getId(@PathVariable("id") Long id) {
-		Character auxChar = charService.findById(id);
-		if (auxChar == null) {
-			return new ResponseEntity<>(new String("El id ingresado no existe."), HttpStatus.BAD_REQUEST);
-
-		} else {
-		
-			CharacterDto charDto = new CharacterDto();
-			charDto = mapToDto(auxChar);
-			return new ResponseEntity<>(charDto, HttpStatus.OK);
-		}
-	}
-
-	@PostMapping
-	public ResponseEntity<?> createCharacter(@RequestBody CharacterDto charDto) {
-		
-		Character character = mapToEntity(charDto);
-		character = charService.createCharacter(character);
-		CharacterDto characterDto = mapToDto(character);
-		
-		return new ResponseEntity<>(characterDto,HttpStatus.CREATED);
-	
-	}
-
-	@PutMapping
-	public ResponseEntity<?> update(@RequestBody Character character) {
-		if (charService.findById(character.getId()) == null) {
-			return new ResponseEntity<>(new String("El id es incorrecto."), HttpStatus.BAD_REQUEST);
-		} else {
-			charService.update(character);
-			return new ResponseEntity<>(new String("Se ha actualizado con éxito"), HttpStatus.OK);
-
-		}
-
-	}
-	
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") Long id){
-		if(charService.findById(id)==null){
-			return new ResponseEntity<>(new String("El id es incorrecto."),HttpStatus.BAD_REQUEST);
-		}
-		else {
-			charService.delete(id);
-		return new ResponseEntity<>(new String("Se ha borrado con éxito."),HttpStatus.OK);
-		}
-	}
-	
-	@GetMapping("/filter")
-	public ResponseEntity<?> filter(@RequestParam(name="name",required=false)  String nombre,
+	//metodo de filtros y devuelve los characters con datos de nombre e imagen
+	public ResponseEntity<?> characters(@RequestParam(name="name",required=false)  String nombre,
 									@RequestParam(name="age",required=false) String edad,
 									@RequestParam(name="weight",required=false)Double peso,
 									@RequestParam(name="movies",required=false)Long idMovie){
@@ -130,12 +64,74 @@ public class CharacterController {
 			return new ResponseEntity<>(charListDto,HttpStatus.OK);
 
 		}else {
-			return null;//poner el otro get
+			List<Character> listChar = charService.findAll();
+			if (listChar.isEmpty()) {
+				return new ResponseEntity<>(new String("No se encontraron personajes."), HttpStatus.BAD_REQUEST);
+			} else {
+				List<CharacterDtoList> listaDtoChar = new ArrayList<>();
+				for (Character c : listChar) {
+					CharacterDtoList dtoCharAux = new CharacterDtoList();
+					dtoCharAux.setName(c.getName());
+					dtoCharAux.setPicture(c.getPicture());
+					listaDtoChar.add(dtoCharAux);
+				}
+				return new ResponseEntity<>(listaDtoChar, HttpStatus.OK);
+			}
 		}
 		
-		//charService.getCharacterByName(nombre);
 		
 	}
+	
+	//buscar por id
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getId(@PathVariable("id") Long id) {
+		Character auxChar = charService.findById(id);
+		if (auxChar == null) {
+			return new ResponseEntity<>(new String("El id ingresado no existe."), HttpStatus.BAD_REQUEST);
+
+		} else {
+		
+			CharacterDto charDto = new CharacterDto();
+			charDto = mapToDto(auxChar);
+			return new ResponseEntity<>(charDto, HttpStatus.OK);
+		}
+	}
+	//metodo para crear 
+	@PostMapping
+	public ResponseEntity<?> createCharacter(@RequestBody CharacterDto charDto) {
+		
+		Character character = mapToEntity(charDto);
+		character = charService.createCharacter(character);
+		CharacterDto characterDto = mapToDto(character);
+		
+		return new ResponseEntity<>(characterDto,HttpStatus.CREATED);
+	
+	}
+	//metodo para actualizar un personaje
+	@PutMapping
+	public ResponseEntity<?> update(@RequestBody Character character) {
+		if (charService.findById(character.getId()) == null) {
+			return new ResponseEntity<>(new String("El id es incorrecto."), HttpStatus.BAD_REQUEST);
+		} else {
+			charService.update(character);
+			return new ResponseEntity<>(new String("Se ha actualizado con éxito"), HttpStatus.OK);
+
+		}
+
+	}
+	//metodo para borrar un personaje
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<?> delete(@PathVariable("id") Long id){
+		if(charService.findById(id)==null){
+			return new ResponseEntity<>(new String("El id es incorrecto."),HttpStatus.BAD_REQUEST);
+		}
+		else {
+			charService.delete(id);
+		return new ResponseEntity<>(new String("Se ha borrado con éxito."),HttpStatus.OK);
+		}
+	}
+	
+	
 	
 	//metodo para filtros
 	private List<CharacterDto> mapListToDto(List<Character> list){

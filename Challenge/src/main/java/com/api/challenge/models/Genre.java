@@ -29,7 +29,7 @@ public class Genre {
 	@Column
 	private String picture;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="genre")
+	@OneToMany(cascade = CascadeType.PERSIST, mappedBy="genre")
 	@JsonIgnore
 	private List<Movie> movies = new ArrayList<>();
 

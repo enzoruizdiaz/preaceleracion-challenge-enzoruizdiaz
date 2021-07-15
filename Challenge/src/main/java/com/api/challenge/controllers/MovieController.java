@@ -32,22 +32,51 @@ public class MovieController {
 	private ModelMapper mapper = new ModelMapper();
 	
 	@GetMapping
-	public ResponseEntity<?> ListarMovies() {
-		List<Movie> listMovies = movieService.findAll();
-		if (listMovies.isEmpty()) {
-			return new ResponseEntity<>(new String("No se encontraron películas."), HttpStatus.BAD_REQUEST);
+	public ResponseEntity<?> filter(@RequestParam(name="name",required=false)String nombre,
+									@RequestParam(name="genre",required=false)Long idGenero,
+									@RequestParam(name="order",required=false)String order){
+		List<MovieDto> movieListDto = new ArrayList<>();
+		List<Movie> movieList = new ArrayList<>();
+		if(nombre!=null) {
+			movieList = movieService.getMovieByTitle(nombre);
+			movieListDto = mapListToDto(movieList);
+			return new  ResponseEntity<>(movieListDto,HttpStatus.OK);
+		} else if(idGenero !=null) {
+			movieList = movieService.getMovieByGenreId(idGenero);
+			movieListDto = mapListToDto(movieList);
+			return new  ResponseEntity<>(movieListDto,HttpStatus.OK);
+			
+		}else if(order!=null) {
+			if(order.equals("DESC")) {
+			movieList = movieService.getMovieOrderByCreationDesc();
+			movieListDto = mapListToDto(movieList);
+			return new  ResponseEntity<>(movieListDto,HttpStatus.OK);
+			
+			} else if(order.equals("ASC")) {
+			movieList = movieService.getMovieOrderByCreationAsc();
+			movieListDto = mapListToDto(movieList);
+			return new  ResponseEntity<>(movieListDto,HttpStatus.OK);
 		} else {
-			List<MovieDtoList> listaDtoMovie = new ArrayList<>();
-			for (Movie m : listMovies) {
-				MovieDtoList dtoMovieAux = new MovieDtoList();
-				dtoMovieAux.setTitle(m.getTitle());
-				dtoMovieAux.setPicture(m.getPicture());
-				dtoMovieAux.setCreation(m.getCreation());
-				listaDtoMovie.add(dtoMovieAux);
+			return new ResponseEntity<>(new String("el parámetro deber ser ASC o DESC"),HttpStatus.BAD_REQUEST);
+		}}
+		else {
+			List<Movie> listMovies = movieService.findAll();
+			if (listMovies.isEmpty()) {
+				return new ResponseEntity<>(new String("No se encontraron películas."), HttpStatus.BAD_REQUEST);
+			} else {
+				List<MovieDtoList> listaDtoMovie = new ArrayList<>();
+				for (Movie m : listMovies) {
+					MovieDtoList dtoMovieAux = new MovieDtoList();
+					dtoMovieAux.setTitle(m.getTitle());
+					dtoMovieAux.setPicture(m.getPicture());
+					dtoMovieAux.setCreation(m.getCreation());
+					listaDtoMovie.add(dtoMovieAux);
+				}
+				return new ResponseEntity<>(listaDtoMovie, HttpStatus.OK);
 			}
-			return new ResponseEntity<>(listaDtoMovie, HttpStatus.OK);
 		}
 	}
+
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getId(@PathVariable("id") Long id) {
@@ -98,38 +127,7 @@ public class MovieController {
 		}
 	}
 	
-	@GetMapping("/filter")
-	public ResponseEntity<?> filter(@RequestParam(name="name",required=false)String nombre,
-									@RequestParam(name="genre",required=false)Long idGenero,
-									@RequestParam(name="order",required=false)String order){
-		List<MovieDto> movieListDto = new ArrayList<>();
-		List<Movie> movieList = new ArrayList<>();
-		if(nombre!=null) {
-			movieList = movieService.getMovieByTitle(nombre);
-			movieListDto = mapListToDto(movieList);
-			return new  ResponseEntity<>(movieListDto,HttpStatus.OK);
-		} else if(idGenero !=null) {
-			movieList = movieService.getMovieByGenreId(idGenero);
-			movieListDto = mapListToDto(movieList);
-			return new  ResponseEntity<>(movieListDto,HttpStatus.OK);
-			
-		}else if(order!=null) {
-			if(order.equals("DESC")) {
-			movieList = movieService.getMovieOrderByCreationDesc();
-			movieListDto = mapListToDto(movieList);
-			return new  ResponseEntity<>(movieListDto,HttpStatus.OK);
-			
-			} else if(order.equals("ASC")) {
-			movieList = movieService.getMovieOrderByCreationAsc();
-			movieListDto = mapListToDto(movieList);
-			return new  ResponseEntity<>(movieListDto,HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(new String("el parámetro deber ser ASC o DESC"),HttpStatus.BAD_REQUEST);
-		}}
-		else {
-			return null;//poner el otro get
-		}
-	}
+
 	
 	private MovieDto mapToDto(Movie m) {
 		MovieDto movieDto =mapper.map(m,MovieDto.class);

@@ -1,5 +1,7 @@
 package com.api.challenge.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,5 +23,17 @@ public class UserService {
 		return userRepository.save(user);
 	}
 	
+	public User update(User user) {
+		return userRepository.save(user);
+	}
+	
+	public User deleteUser(User user) {
+		user.setActive(false);
+		return userRepository.save(user);
+	}
+	
+	public List<User> findAll(){
+		return userRepository.findAll();
+	}
 	
 }

@@ -18,7 +18,7 @@ public class CharacterService {
 	@Autowired
 	private MovieService movieService;
 	
-	public Character createCharacter(Character character) {
+	public Character createCharacter(Character character) {//setiando personaje y agregando movie relacionada. create
 		Character newChar= new Character();
 		newChar.setName(character.getName());
 		newChar.setPicture(character.getPicture());
@@ -46,7 +46,7 @@ public class CharacterService {
 		charRepository.deleteById(id);
 		return new String("se ha borrado exitosamente el personaje" + id );
 	}
-	public Character update(Character character) {
+	public Character update(Character character) { //setiando character y agregando movie relacionada. update
 		Character newChar= new Character();
 		newChar.setId(character.getId());
 		newChar.setName(character.getName());
@@ -70,13 +70,15 @@ public class CharacterService {
 	                        }).collect(Collectors.toList()));
 		return charRepository.save(newChar);
 	}
-	
+	//busqueda x id
 	public Character findById(Long id) {
 		return charRepository.findById(id).orElse(null);
 	}
+	//metodo all
 	public List<Character> findAll() {
 		return charRepository.findAll();
 	}
+	//filtros
 	public List<Character> getCharacterByName(String name) {
 		return charRepository.findByName(name);
 	}

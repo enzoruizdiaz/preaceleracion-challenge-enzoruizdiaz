@@ -20,7 +20,7 @@ public class Character {
 	private Long id;
 	
 	@NotEmpty
-	@Column
+	@Column(unique = true)
 	private String name;
 	
 	@NotEmpty
@@ -36,7 +36,7 @@ public class Character {
 	@Column
 	private String story;
 	
-	@ManyToMany(cascade =CascadeType.ALL)
+	@ManyToMany(cascade =CascadeType.MERGE)
 	@JoinTable(name="personage_movie",
 	joinColumns =  @JoinColumn(name ="personage_fk"),
 	inverseJoinColumns =  @JoinColumn(name ="movie_fk") )

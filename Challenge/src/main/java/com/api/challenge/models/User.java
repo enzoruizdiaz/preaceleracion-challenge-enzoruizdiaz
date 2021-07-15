@@ -21,6 +21,7 @@ public class User implements Serializable {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(nullable = false,unique=true)
     private Long id;
 	
 	@Column(nullable = false)
@@ -35,7 +36,7 @@ public class User implements Serializable {
 	@NotEmpty
 	private String lastName;
 	
-	@Column(nullable = false)
+	@Column(nullable = false,unique=true)
 	@NotEmpty
 	private String email;
 	

@@ -42,7 +42,7 @@ public class Movie {
 	@Max(value=5)
 	private Integer qualification;
 	
-	@ManyToMany(mappedBy= "movies",cascade = CascadeType.ALL)
+	@ManyToMany(mappedBy= "movies",cascade = CascadeType.MERGE)
 	private List<Character> characters = new ArrayList<>();
 	
 	@ManyToOne()

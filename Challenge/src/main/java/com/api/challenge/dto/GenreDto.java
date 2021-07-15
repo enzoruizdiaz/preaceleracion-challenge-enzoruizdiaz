@@ -3,7 +3,6 @@ package com.api.challenge.dto;
 import java.io.Serializable;
 import java.util.List;
 
-import com.api.challenge.dto.MovieDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
